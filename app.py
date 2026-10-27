@@ -11,10 +11,11 @@ from PySide6.QtGui import QColor, QPainter, QPen, QImage, QPixmap, QIcon, QDeskt
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QLabel,
     QPushButton, QListWidget, QListWidgetItem, QAbstractItemView, QFileDialog,
-    QMessageBox, QComboBox, QDoubleSpinBox, QProgressBar, QFrame,
+    QMessageBox, QComboBox, QDoubleSpinBox, QProgressBar, QFrame, QTabWidget,
 )
 
 from crop_core import EXTENSIONS, crop_box, open_image, inspect_image, export_image
+from organizer_ui import Organizer
 
 
 def qt_image(image):
@@ -223,7 +224,11 @@ class Window(QMainWindow):
         self.busy = False
         self.destination = None
         root = QWidget()
-        self.setCentralWidget(root)
+        self.tabs = QTabWidget()
+        self.setCentralWidget(self.tabs)
+        self.tabs.addTab(root, "Recortar imágenes")
+        self.organizer = Organizer()
+        self.tabs.addTab(self.organizer, "Ordenar y renombrar")
         layout = QVBoxLayout(root)
         layout.setContentsMargins(24, 20, 24, 20)
         layout.setSpacing(14)
@@ -540,7 +545,7 @@ class Window(QMainWindow):
             dialog.exec()
 
     def closeEvent(self, event):
-        if self.busy:
+        if self.busy or self.organizer.busy:
             QMessageBox.information(self, "Proceso en curso",
                                     "Cancela el proceso o espera a que termine antes de cerrar.")
             event.ignore()

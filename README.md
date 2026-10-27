@@ -1,6 +1,6 @@
 # Recorta · macOS
 
-Aplicación de Python para recortar muchas imágenes a una relación de aspecto común, con encuadre ajustable por imagen.
+Aplicación de Python para recortar muchas imágenes a una relación de aspecto común, con encuadre ajustable por imagen, y ordenar tiras con sus respectivas fotos.
 
 ## Abrir la aplicación
 
@@ -30,6 +30,29 @@ Para la foto original de 6000 × 4000 px, las medidas 950 × 1250 generan un rec
 - Todo se procesa en el equipo. No sube imágenes a internet.
 - Los errores de un archivo no detienen los demás; los detalles se muestran al finalizar.
 
+## Ordenar y renombrar
+
+Abre la pestaña **Ordenar y renombrar**. Es independiente del recorte y trabaja con las fotos ya recortadas o con otros archivos de imagen.
+
+1. Usa **Añadir tiras** para elegir los archivos o la carpeta de las tiras. Usa **Añadir fotos** para elegir los archivos o la carpeta de sus fotos individuales.
+2. La app propone grupos por la fecha y hora incluidas en el nombre. Por defecto toma las **2 fotos anteriores más cercanas** a cada tira, del mismo día y dentro de los **180 segundos** anteriores. Puedes cambiar ambas reglas y pulsar **Agrupar por fecha** para recalcular la propuesta. Recalcular reemplaza las correcciones manuales.
+3. Revisa los grupos y sus vistas previas. **Subir/Bajar** cambia el orden de una tira completa con sus fotos, o el de una foto dentro de su grupo. Para corregir una asociación, selecciona una o varias fotos, elige su tira y pulsa **Asignar**. **Separar** la deja sin asignación. **Quitar de lista** retira el elemento del trabajo; al quitar una tira, sus fotos quedan sin asignar.
+4. Puedes añadir un prefijo común y elegir el número inicial. La columna **Nombre de salida** muestra los nombres definitivos. Las fotos sin tira se muestran aparte y se guardan al final con `Sin_asignar` en el nombre. Las tiras con menos fotos de las esperadas se marcan para revisión.
+5. Pulsa **Guardar copias ordenadas** y elige la ubicación. La app crea una carpeta nueva `Ordenadas_…` con copias idénticas y un archivo `orden.csv` para consultar la correspondencia entre nombres. No mueve ni renombra los originales. Cancelar conserva las copias terminadas y elimina la copia parcial.
+
+Ejemplo con tus nombres:
+
+```text
+000001_Tira_20261025_101004_994_1x.jpg
+000002_Foto_IMG_8614_20261025_100948_recortada.png
+000003_Foto_IMG_8615_20261025_101001_recortada.png
+000004_Tira_20261025_101141_899_1x.jpg
+000005_Foto_IMG_8616_20261025_101125_recortada.png
+000006_Foto_IMG_8617_20261025_101138_recortada.png
+```
+
+En Finder o en la aplicación donde abras las fotos, ordena **por Nombre** para ver esta secuencia. La asociación usa los nombres, no el contenido visual. Los archivos sin fecha reconocible se pueden asignar manualmente. Si añades archivos después de hacer correcciones manuales, se conservan tus ajustes y los nuevos quedan disponibles para asignar.
+
 ## Ejecutar desde Python
 
 Requiere Python 3.10 o posterior (se compiló con Python 3.12).
@@ -49,6 +72,8 @@ En macOS, ejecuta `./build_macos.sh`. Si necesitas elegir Python, usa `RECORTA_P
 
 ```bash
 .venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python tests/gui_smoke.py
+.venv/bin/python tests/organizer_smoke.py
 ```
 
-Verifican orientación EXIF, encuadre, límites, transparencia, formatos de salida, conservación de archivos existentes y errores de entrada.
+Verifican orientación EXIF, encuadre, límites, transparencia, formatos de salida, conservación de archivos existentes, agrupación por fechas, correcciones desde la interfaz y copias sin pérdida.
